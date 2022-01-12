@@ -76,7 +76,6 @@
         <!--Navigation View Controller-->
         <scene sceneID="KpC-PS-amL">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Sgu-bH-noS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController id="7u2-8y-aAw" customClass="NavigationViewController" customModule="OpenMarket" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="T2Z-5N-ZjX">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -86,6 +85,7 @@
                         <segue destination="LAD-DO-y0V" kind="relationship" relationship="rootViewController" id="BpH-3X-L9P"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Sgu-bH-noS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-774" y="70"/>
         </scene>
@@ -103,15 +103,19 @@
                                 <segment title="LIST"/>
                                 <segment title="GRID"/>
                             </segments>
+                            <connections>
+                                <action selector="switchViewLayout:" destination="LAD-DO-y0V" eventType="valueChanged" id="Kti-3C-OZR"/>
+                            </connections>
                         </segmentedControl>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="oCU-qI-BHr"/>
                     </navigationItem>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="MF0-cU-r8Q">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <tabBarAppearance key="standardAppearance"/>
                     </tabBar>
                     <connections>
+                        <outlet property="hiddenTabBar" destination="MF0-cU-r8Q" id="0Ic-MK-dpl"/>
                         <outlet property="segmentSwitch" destination="B1o-ft-gIo" id="PcP-tm-QQ9"/>
                         <segue destination="TGA-ws-84W" kind="relationship" relationship="viewControllers" id="aZp-Vd-4SE"/>
                         <segue destination="qdK-EZ-QlJ" kind="relationship" relationship="viewControllers" id="9f1-rM-Klc"/>
