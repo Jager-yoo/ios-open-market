@@ -9,7 +9,7 @@ import UIKit
 class TabBarViewController: UITabBarController {
 
     @IBOutlet private weak var segmentSwitch: UISegmentedControl!
-    @IBOutlet private weak var hiddenTabBar: UITabBar!
+    @IBOutlet private weak var hiddenTabBar: UITabBar! // 이거 필요 없음!
     
     @IBAction func switchViewLayout(_ sender: UISegmentedControl) {
         // 이미 해당 화면에 있을 경우, 요청을 무시하는 로직을 넣지 않아도, 다시 호출되지 않는 듯?
@@ -17,8 +17,10 @@ class TabBarViewController: UITabBarController {
         case 0:
             print("🧡 LIST 선택됨!")
             // 어떻게 해당 탭바 아이템이 클릭되는 효과를 줄 수 있을까?
+            selectedIndex = 0
         case 1:
             print("💚 GRID 선택됨!")
+            selectedIndex = 1
         default:
             fatalError()
         }
@@ -28,6 +30,7 @@ class TabBarViewController: UITabBarController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         setUpSegmentSwitch()
+        self.tabBar.isHidden = true // 이 코드로 탭바를 숨길 수 있다.
     }
     
     private func setUpSegmentSwitch() {
