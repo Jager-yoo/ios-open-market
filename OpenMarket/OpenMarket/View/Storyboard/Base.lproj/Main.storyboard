@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="LAD-DO-y0V">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="7u2-8y-aAw">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -73,11 +73,38 @@
             </objects>
             <point key="canvasLocation" x="403" y="819"/>
         </scene>
+        <!--Navigation View Controller-->
+        <scene sceneID="KpC-PS-amL">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Sgu-bH-noS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <navigationController id="7u2-8y-aAw" customClass="NavigationViewController" customModule="OpenMarket" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="T2Z-5N-ZjX">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="LAD-DO-y0V" kind="relationship" relationship="rootViewController" id="BpH-3X-L9P"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="-774" y="70"/>
+        </scene>
         <!--Tab Bar View Controller-->
         <scene sceneID="icq-h0-U4q">
             <objects>
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="LAD-DO-y0V" customClass="TabBarViewController" customModule="OpenMarket" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="uyD-9P-8Yf">
+                        <nil key="title"/>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="B1o-ft-gIo">
+                            <rect key="frame" x="108.5" y="5.5" width="197" height="33"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="LIST"/>
+                                <segment title="GRID"/>
+                            </segments>
+                        </segmentedControl>
+                    </navigationItem>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="MF0-cU-r8Q">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -85,6 +112,7 @@
                         <tabBarAppearance key="standardAppearance"/>
                     </tabBar>
                     <connections>
+                        <outlet property="segmentSwitch" destination="B1o-ft-gIo" id="PcP-tm-QQ9"/>
                         <segue destination="TGA-ws-84W" kind="relationship" relationship="viewControllers" id="aZp-Vd-4SE"/>
                         <segue destination="qdK-EZ-QlJ" kind="relationship" relationship="viewControllers" id="9f1-rM-Klc"/>
                     </connections>
