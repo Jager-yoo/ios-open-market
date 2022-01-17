@@ -26,6 +26,11 @@ struct NewProductInfo: Encodable {
         self.stock = stock
         self.secret = secret
     }
+    
+    private enum CodingKeys: String, CodingKey {
+        case discountedPrice = "discounted_price"
+        case name, descriptions, price, currency, stock, secret
+    }
 }
 
 struct EditProductInfo: Encodable {

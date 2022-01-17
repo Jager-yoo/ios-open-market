@@ -14,6 +14,7 @@ class ProductListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // print(#function) -> 이걸 적어두면, 이게 포함된 메서드가 콘솔로그에 뜬다! 컴파일 시간은 아주 살짝 더 걸림.
         let request = ProductsListPageRequest(pageNo: 1, itemsPerPage: 20)
         APIExecutor().execute(request) { (result: Result<ProductsListPage, Error>) in
             switch result {
@@ -54,11 +55,20 @@ class ProductListViewController: UITableViewController {
         guard let product = initialProductsListPage?.pages[indexPath.row] else {
             return cell
         }
-    
-        cell.productThumbnail.image = getImage(from: product.thumbnail)
+        
+        DispatchQueue.main.async {
+            cell.productThumbnail.image = self.getImage(from: product.thumbnail)
+        }
         cell.productName.attributedText = product.attributedName
         cell.productPrice.attributedText = product.attributedPrice
         cell.productStock.attributedText = product.attributedStock
+        
+//        DispatchQueue.main.async {
+//            cell.productThumbnail.image = self.getImage(from: product.thumbnail)
+//            cell.productName.attributedText = product.attributedName
+//            cell.productPrice.attributedText = product.attributedPrice
+//            cell.productStock.attributedText = product.attributedStock
+//        }
 
         return cell
     }
@@ -66,7 +76,7 @@ class ProductListViewController: UITableViewController {
     private func getImage(from url: String) -> UIImage? {
         guard let url = URL(string: url), let imageData = try? Data(contentsOf: url) else {
             let defaultImage = UIImage(systemName: "xmark.icloud")
-            return defaultImage?.withTintColor(.systemGray)
+            return defaultImage?.withTintColor(.systemGray, renderingMode: .alwaysOriginal)
         }
         return UIImage(data: imageData)
     }

@@ -51,12 +51,12 @@ struct ProductRegistrationRequest: APIRequest {
         self.identifier = identifier
         self.params = params
         self.images = images
-        self.boundary = "--\(UUID().uuidString)"
+        self.boundary = UUID().uuidString
     }
     
     private func createBody(params productInfo: NewProductInfo, images: [ImageFile], boundary: String) -> Data? {
         var body = Data()
-        let boundary = boundary
+        let boundary = "--\(boundary)"
         let lineBreak = "\r\n"
         let params = "Content-Disposition: form-data; name=\"params\""
         guard let encodedProductInfo = JSONCodable().encode(from: productInfo) else {

@@ -13,7 +13,7 @@ struct Product: Codable {
     let vendorID: Int
     let name: String
     let thumbnail: String
-    let currency: Currency
+    let currency: Currency // String?
     let price: Double
     let bargainPrice: Double
     let discountedPrice: Double
@@ -56,7 +56,7 @@ extension Product {
                              .foregroundColor: UIColor.systemRed,
                              .strikethroughStyle: NSUnderlineStyle.single.rawValue]
             )
-            let bargainPrice = NSAttributedString(
+            let bargainPrice = NSAttributedString( // currency.description
                 string: currency.rawValue + .whiteSpace + bargainPrice.formatted,
                 attributes: [.font: UIFont.preferredFont(forTextStyle: .callout),
                              .foregroundColor: UIColor.systemGray]

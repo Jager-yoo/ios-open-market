@@ -16,10 +16,17 @@ struct JSONCodable {
     func decode<T: Decodable>(from data: Data) -> T? {
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SS"
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
-        guard let data = try? decoder.decode(T.self, from: data) else {
+        do {
+            let data = try decoder.decode(T.self, from: data)
+            return data
+        } catch {
+            print(error)
             return nil
         }
-        return data
+//        guard let data = try? decoder.decode(T.self, from: data) else {
+//            return nil
+//        }
+//        return data
     }
     
     func decode<T: Decodable>(from fileName: String) -> T? {

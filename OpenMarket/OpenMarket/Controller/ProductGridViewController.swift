@@ -33,6 +33,7 @@ class ProductGridViewController: UICollectionViewController {
     }
     
     private func configureGridLayout() {
+        // flowLayout 에게 역할을 줘버리는 것.
         collectionView.collectionViewLayout = flowLayout
         let cellWidth = view.bounds.size.width / 2 - 10
         flowLayout.itemSize = CGSize(width: cellWidth, height: cellWidth * 1.5)
@@ -73,11 +74,34 @@ class ProductGridViewController: UICollectionViewController {
         return cell
     }
     
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        let cellWidth = view.bounds.size.width / 2 - 10
+//        return CGSize(width: cellWidth, height: cellWidth * 1.5)
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+//        return 10
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+//        return 10
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+//        return UIEdgeInsets(top: 5, left: 5, bottom: .zero, right: 5)
+//    }
+
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("🥺선택한 아이템은 \(indexPath.section) 에서 \(indexPath.item)")
+    }
+    
     private func configureGridContent(of cell: ProductGridViewCell, with product: Product) {
-        cell.productThumbnail.image = getImage(from: product.thumbnail)
-        cell.productName.attributedText = product.attributedName
-        cell.productPrice.attributedText = product.attributedPrice
-        cell.productStock.attributedText = product.attributedStock
+        DispatchQueue.main.async {
+            cell.productThumbnail.image = self.getImage(from: product.thumbnail)
+            cell.productName.attributedText = product.attributedName
+            cell.productPrice.attributedText = product.attributedPrice
+            cell.productStock.attributedText = product.attributedStock
+        }
     }
     
     private func configureGridCellLayer(of cell: ProductGridViewCell) {

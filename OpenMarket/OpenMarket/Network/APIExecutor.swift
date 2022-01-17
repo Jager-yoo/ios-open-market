@@ -20,7 +20,7 @@ struct APIExecutor {
         }
 
         urlRequest.httpBody = request.body
-
+        // print(String(decoding: urlRequest.httpBody!, as: UTF8.self))
         executeTask(request: urlRequest, completion)
     }
     
@@ -37,8 +37,12 @@ struct APIExecutor {
                       return
                   }
             
-            guard let data = data else { return }
+            guard let data = data else {
+                completion(.failure(APIError.dataIsNil))
+                return
+            } // 컴플리션 핸들러 호출할 필요 있음
             guard let decoded: T = JSONCodable().decode(from: data) else {
+                completion(.failure(APIError.dataIsNotParsed))
                 return
             }
             completion(.success(decoded))
