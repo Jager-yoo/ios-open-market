@@ -122,13 +122,13 @@ final class ProductTableViewController: UITableViewController {
                 self.currentPageNo = productsListPage.pageNo
                 self.hasNextPage = productsListPage.hasNext
                 self.products.append(contentsOf: productsListPage.pages)
-                DispatchQueue.main.async {
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500), execute: {
                     self.tableView.reloadData()
                     if self.refreshControl?.isRefreshing == false {
                         self.scrollToTop(animated: false)
                     }
                     self.refreshControl?.endRefreshing()
-                }
+                })
             case .failure(let error):
                 // Alert 넣기
                 print("ProductsListPage 통신 중 에러 발생 : \(error)")

@@ -137,13 +137,13 @@ final class ProductCollectionViewController: UICollectionViewController {
                 self.currentPageNo = productsListPage.pageNo
                 self.hasNextPage = productsListPage.hasNext
                 self.products.append(contentsOf: productsListPage.pages)
-                DispatchQueue.main.async {
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500), execute: {
                     self.collectionView.reloadData()
                     if self.collectionView.refreshControl?.isRefreshing == false {
                         self.scrollToFirstItem(animated: false)
                     }
                     self.collectionView.refreshControl?.endRefreshing()
-                }
+                })
             case .failure(let error):
                 // Alert 넣기
                 print("ProductsListPage 통신 중 에러 발생 : \(error)")
