@@ -78,14 +78,16 @@ final class ProductTableViewController: UITableViewController {
     private func downloadProductsListPage(number: Int) {
         let request = ProductsListPageRequest(pageNo: number, itemsPerPage: 20)
         APIExecutor().execute(request) { [weak self] (result: Result<ProductsListPage, Error>) in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let productsListPage):
-                self?.currentPageNo = productsListPage.pageNo
-                self?.hasNextPage = productsListPage.hasNext
-                self?.products.append(contentsOf: productsListPage.pages)
+                self.currentPageNo = productsListPage.pageNo
+                self.hasNextPage = productsListPage.hasNext
+                self.products.append(contentsOf: productsListPage.pages)
                 DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                    self?.loadingIndicator.stopAnimating()
+                    self.tableView.reloadData()
+                    self.loadingIndicator.stopAnimating()
                 }
             case .failure(let error):
                 // Alert 넣기
@@ -108,17 +110,19 @@ final class ProductTableViewController: UITableViewController {
         resetProductListPageInfo()
         let request = ProductsListPageRequest(pageNo: 1, itemsPerPage: 20)
         APIExecutor().execute(request) { [weak self] (result: Result<ProductsListPage, Error>) in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let productsListPage):
-                self?.currentPageNo = productsListPage.pageNo
-                self?.hasNextPage = productsListPage.hasNext
-                self?.products.append(contentsOf: productsListPage.pages)
+                self.currentPageNo = productsListPage.pageNo
+                self.hasNextPage = productsListPage.hasNext
+                self.products.append(contentsOf: productsListPage.pages)
                 DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                    if self?.refreshControl?.isRefreshing == false {
-                        self?.scrollToTop(animated: false)
+                    self.tableView.reloadData()
+                    if self.refreshControl?.isRefreshing == false {
+                        self.scrollToTop(animated: false)
                     }
-                    self?.refreshControl?.endRefreshing()
+                    self.refreshControl?.endRefreshing()
                 }
             case .failure(let error):
                 // Alert 넣기

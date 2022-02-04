@@ -86,19 +86,21 @@ final class ProductRegistrationViewController: UIViewController {
         )
         
         APIExecutor().execute(request) { [weak self] (result: Result<ProductDetail, Error>) in
+            guard let self = self else { return }
+            
             switch result {
             case .success:
                 DispatchQueue.main.async {
-                    self?.showAlert(title: "상품이 성공적으로 등록됐습니다", message: "🤑") { _ in
-                        self?.dismiss(animated: true) {
-                            self?.tableViewRefreshDelegate?.refresh()
-                            self?.collectionViewRefreshDelegate?.refresh()
+                    self.showAlert(title: "상품이 성공적으로 등록됐습니다", message: "🤑") { _ in
+                        self.dismiss(animated: true) {
+                            self.tableViewRefreshDelegate?.refresh()
+                            self.collectionViewRefreshDelegate?.refresh()
                         }
                     }
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self?.showAlert(title: "상품 등록에 실패했습니다", message: "🥲", handler: nil)
+                    self.showAlert(title: "상품 등록에 실패했습니다", message: "🥲", handler: nil)
                 }
                 print("에러가 발생했습니다! : \(error)")
             }

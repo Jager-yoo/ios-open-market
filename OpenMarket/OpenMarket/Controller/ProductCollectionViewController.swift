@@ -93,14 +93,16 @@ final class ProductCollectionViewController: UICollectionViewController {
     private func downloadProductsListPage(number: Int) {
         let request = ProductsListPageRequest(pageNo: number, itemsPerPage: 20)
         APIExecutor().execute(request) { [weak self] (result: Result<ProductsListPage, Error>) in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let productsListPage):
-                self?.currentPageNo = productsListPage.pageNo
-                self?.hasNextPage = productsListPage.hasNext
-                self?.products.append(contentsOf: productsListPage.pages)
+                self.currentPageNo = productsListPage.pageNo
+                self.hasNextPage = productsListPage.hasNext
+                self.products.append(contentsOf: productsListPage.pages)
                 DispatchQueue.main.async {
-                    self?.collectionView.reloadData()
-                    self?.loadingIndicator.stopAnimating()
+                    self.collectionView.reloadData()
+                    self.loadingIndicator.stopAnimating()
                 }
             case .failure(let error):
                 // Alert 넣기
@@ -123,17 +125,19 @@ final class ProductCollectionViewController: UICollectionViewController {
         resetProductListPageInfo()
         let request = ProductsListPageRequest(pageNo: 1, itemsPerPage: 20)
         APIExecutor().execute(request) { [weak self] (result: Result<ProductsListPage, Error>) in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let productsListPage):
-                self?.currentPageNo = productsListPage.pageNo
-                self?.hasNextPage = productsListPage.hasNext
-                self?.products.append(contentsOf: productsListPage.pages)
+                self.currentPageNo = productsListPage.pageNo
+                self.hasNextPage = productsListPage.hasNext
+                self.products.append(contentsOf: productsListPage.pages)
                 DispatchQueue.main.async {
-                    self?.collectionView.reloadData()
-                    if self?.collectionView.refreshControl?.isRefreshing == false {
-                        self?.scrollToFirstItem(animated: false)
+                    self.collectionView.reloadData()
+                    if self.collectionView.refreshControl?.isRefreshing == false {
+                        self.scrollToFirstItem(animated: false)
                     }
-                    self?.collectionView.refreshControl?.endRefreshing()
+                    self.collectionView.refreshControl?.endRefreshing()
                 }
             case .failure(let error):
                 // Alert 넣기
