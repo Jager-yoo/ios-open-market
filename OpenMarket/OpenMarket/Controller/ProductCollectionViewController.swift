@@ -119,6 +119,11 @@ final class ProductCollectionViewController: UICollectionViewController {
             action: #selector(handleRefreshControl),
             for: .valueChanged
         )
+        collectionView.refreshControl?.tintColor = UIColor.systemIndigo
+        collectionView.refreshControl?.attributedTitle = NSAttributedString(
+            string: "당겨서 새로고침",
+            attributes: [.foregroundColor: UIColor.systemIndigo]
+        )
     }
     
     @objc private func handleRefreshControl() {

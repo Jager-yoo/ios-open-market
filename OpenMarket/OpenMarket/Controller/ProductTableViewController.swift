@@ -104,6 +104,11 @@ final class ProductTableViewController: UITableViewController {
             action: #selector(handleRefreshControl),
             for: .valueChanged
         )
+        refreshControl?.tintColor = UIColor.systemIndigo
+        refreshControl?.attributedTitle = NSAttributedString(
+            string: "당겨서 새로고침",
+            attributes: [.foregroundColor: UIColor.systemIndigo]
+        )
     }
     
     @objc private func handleRefreshControl() {
