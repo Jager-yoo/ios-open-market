@@ -27,10 +27,11 @@ extension UIImageView {
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
             guard let self = self else { return }
             
-            if let _ = error {
+            if let error = error, error.localizedDescription != "cancelled" {
                 DispatchQueue.main.async {
                     self.image = invalidImage
                 }
+                print("❌ 에러 : \(error.localizedDescription) 발생!")
                 return
             } else {
                 DispatchQueue.main.async {
