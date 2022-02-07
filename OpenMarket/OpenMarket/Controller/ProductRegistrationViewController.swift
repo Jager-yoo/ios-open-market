@@ -34,6 +34,19 @@ final class ProductRegistrationViewController: UIViewController {
     private var productImages: [UIImage] = []
     private var cells: [CellType] = [.imagePickerCell]
     private let flowLayout = UICollectionViewFlowLayout()
+    private lazy var descriptionsTextViewPlaceholder: UITextView = {
+        let textView = UITextView()
+        textView.text = "브랜드, 사이즈, 색상, 소재 등 물품에 대한 자세한 정보를 작성하면 판매확률이 올라가요!"
+        textView.textColor = .placeholderText
+        textView.font = .preferredFont(forTextStyle: .body)
+        textView.backgroundColor = .clear
+        textView.isUserInteractionEnabled = false
+        textView.isScrollEnabled = false
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.showsVerticalScrollIndicator = false
+        textView.showsHorizontalScrollIndicator = false
+        return textView
+    }()
     
     // MARK: - Methods
     
@@ -49,6 +62,20 @@ final class ProductRegistrationViewController: UIViewController {
         super.viewDidLoad()
         productImageCollectionView?.delegate = self
         productImageCollectionView?.dataSource = self
+        guard let descriptionsTextView = descriptionsTextView else { return }
+        descriptionsTextView.delegate = self
+        descriptionsTextView.addSubview(descriptionsTextViewPlaceholder)
+        NSLayoutConstraint.activate([
+//            descriptionsTextView.leadingAnchor.constraint(equalTo: descriptionsTextViewPlaceholder.leadingAnchor),
+//            descriptionsTextView.trailingAnchor.constraint(equalTo: descriptionsTextViewPlaceholder.trailingAnchor),
+//            descriptionsTextView.topAnchor.constraint(equalTo: descriptionsTextViewPlaceholder.topAnchor),
+//            descriptionsTextView.bottomAnchor.constraint(equalTo: descriptionsTextViewPlaceholder.bottomAnchor)
+            descriptionsTextViewPlaceholder.widthAnchor.constraint(equalTo: descriptionsTextView.widthAnchor),
+            descriptionsTextViewPlaceholder.leadingAnchor.constraint(equalTo: descriptionsTextView.leadingAnchor),
+            descriptionsTextViewPlaceholder.trailingAnchor.constraint(equalTo: descriptionsTextView.trailingAnchor),
+            descriptionsTextViewPlaceholder.topAnchor.constraint(equalTo: descriptionsTextView.topAnchor),
+            descriptionsTextViewPlaceholder.bottomAnchor.constraint(equalTo: descriptionsTextView.bottomAnchor)
+        ])
         configureNavigationBar()
         configureFlowLayout()
         addKeyboardNotificationObserver()
@@ -267,5 +294,18 @@ extension ProductRegistrationViewController: UIImagePickerControllerDelegate, UI
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         self.dismiss(animated: true, completion: nil)
+    }
+}
+
+// MARK: - UITextViewDelegate
+
+extension ProductRegistrationViewController: UITextViewDelegate {
+    
+    func textViewDidChange(_ textView: UITextView) {
+        if textView.hasText {
+            descriptionsTextViewPlaceholder.isHidden = true
+        } else {
+            descriptionsTextViewPlaceholder.isHidden = false
+        }
     }
 }

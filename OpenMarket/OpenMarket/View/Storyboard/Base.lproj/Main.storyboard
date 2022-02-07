@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="N4P-j3-ySf">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="N4P-j3-ySf">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -294,7 +294,7 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="808"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="dsg-cs-9tM">
-                                        <rect key="frame" x="10" y="0.0" width="394" height="377"/>
+                                        <rect key="frame" x="10" y="0.0" width="394" height="646.5"/>
                                         <subviews>
                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="bLQ-YT-Wja">
                                                 <rect key="frame" x="0.0" y="0.0" width="394" height="136.5"/>
@@ -401,14 +401,12 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                             </textField>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="tFm-3Q-kKc">
-                                                <rect key="frame" x="0.0" y="323" width="394" height="54"/>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="tFm-3Q-kKc">
+                                                <rect key="frame" x="0.0" y="323" width="394" height="323.5"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                                <string key="text">상품 상세 정보를 입력해주세요.
-(최소 10 ~ 최대 1,000 글자 작성 가능 😊)</string>
                                                 <color key="textColor" systemColor="labelColor"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" secureTextEntry="YES"/>
                                             </textView>
                                         </subviews>
                                         <constraints>
@@ -422,6 +420,7 @@
                                 <constraints>
                                     <constraint firstItem="dsg-cs-9tM" firstAttribute="leading" secondItem="bsQ-zh-7bl" secondAttribute="leading" constant="10" id="4lg-Lm-3dD"/>
                                     <constraint firstItem="dsg-cs-9tM" firstAttribute="top" secondItem="bsQ-zh-7bl" secondAttribute="top" id="6Rg-es-oif"/>
+                                    <constraint firstItem="tFm-3Q-kKc" firstAttribute="height" secondItem="cn5-Ir-Oaa" secondAttribute="height" multiplier="0.4" id="GaU-gY-maE"/>
                                     <constraint firstItem="dsg-cs-9tM" firstAttribute="trailing" secondItem="bsQ-zh-7bl" secondAttribute="trailing" constant="-10" id="UqB-1j-2Zo"/>
                                     <constraint firstItem="dsg-cs-9tM" firstAttribute="bottom" secondItem="bsQ-zh-7bl" secondAttribute="bottom" id="lHE-aF-XF1"/>
                                     <constraint firstItem="dsg-cs-9tM" firstAttribute="width" secondItem="cn5-Ir-Oaa" secondAttribute="width" constant="-20" id="sHt-m9-ERX"/>
