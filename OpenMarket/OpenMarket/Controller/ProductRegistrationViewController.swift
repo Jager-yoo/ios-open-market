@@ -34,7 +34,7 @@ final class ProductRegistrationViewController: UIViewController {
     private var productImages: [UIImage] = []
     private var cells: [CellType] = [.imagePickerCell]
     private let flowLayout = UICollectionViewFlowLayout()
-    private lazy var descriptionsTextViewPlaceholder: UITextView = {
+    private var descriptionsTextViewPlaceholder: UITextView = {
         let textView = UITextView()
         textView.text = "브랜드, 사이즈, 색상, 소재 등 물품에 대한 자세한 정보를 작성하면 판매확률이 올라가요!"
         textView.textColor = .placeholderText
@@ -62,20 +62,8 @@ final class ProductRegistrationViewController: UIViewController {
         super.viewDidLoad()
         productImageCollectionView?.delegate = self
         productImageCollectionView?.dataSource = self
-        guard let descriptionsTextView = descriptionsTextView else { return }
-        descriptionsTextView.delegate = self
-        descriptionsTextView.addSubview(descriptionsTextViewPlaceholder)
-        NSLayoutConstraint.activate([
-//            descriptionsTextView.leadingAnchor.constraint(equalTo: descriptionsTextViewPlaceholder.leadingAnchor),
-//            descriptionsTextView.trailingAnchor.constraint(equalTo: descriptionsTextViewPlaceholder.trailingAnchor),
-//            descriptionsTextView.topAnchor.constraint(equalTo: descriptionsTextViewPlaceholder.topAnchor),
-//            descriptionsTextView.bottomAnchor.constraint(equalTo: descriptionsTextViewPlaceholder.bottomAnchor)
-            descriptionsTextViewPlaceholder.widthAnchor.constraint(equalTo: descriptionsTextView.widthAnchor),
-            descriptionsTextViewPlaceholder.leadingAnchor.constraint(equalTo: descriptionsTextView.leadingAnchor),
-            descriptionsTextViewPlaceholder.trailingAnchor.constraint(equalTo: descriptionsTextView.trailingAnchor),
-            descriptionsTextViewPlaceholder.topAnchor.constraint(equalTo: descriptionsTextView.topAnchor),
-            descriptionsTextViewPlaceholder.bottomAnchor.constraint(equalTo: descriptionsTextView.bottomAnchor)
-        ])
+        descriptionsTextView?.delegate = self
+        configureDescriptionTextView()
         configureNavigationBar()
         configureFlowLayout()
         addKeyboardNotificationObserver()
@@ -98,6 +86,18 @@ final class ProductRegistrationViewController: UIViewController {
         flowLayout.itemSize = CGSize(width: cellWidth, height: cellWidth)
         flowLayout.minimumLineSpacing = 10
         flowLayout.sectionInset = UIEdgeInsets(top: .zero, left: 10, bottom: .zero, right: 10)
+    }
+    
+    private func configureDescriptionTextView() {
+        guard let descriptionsTextView = descriptionsTextView else { return }
+        descriptionsTextView.addSubview(descriptionsTextViewPlaceholder)
+        NSLayoutConstraint.activate([
+            descriptionsTextViewPlaceholder.widthAnchor.constraint(equalTo: descriptionsTextView.widthAnchor),
+            descriptionsTextViewPlaceholder.leadingAnchor.constraint(equalTo: descriptionsTextView.leadingAnchor),
+            descriptionsTextViewPlaceholder.trailingAnchor.constraint(equalTo: descriptionsTextView.trailingAnchor),
+            descriptionsTextViewPlaceholder.topAnchor.constraint(equalTo: descriptionsTextView.topAnchor),
+            descriptionsTextViewPlaceholder.bottomAnchor.constraint(equalTo: descriptionsTextView.bottomAnchor)
+        ])
     }
     
     private func handleProductRegistrationRequest() {
@@ -183,13 +183,13 @@ final class ProductRegistrationViewController: UIViewController {
     private func addKeyboardNotificationObserver() {
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(keyboardWillShow(_:)),
+            selector: #selector(keyboardWillShow),
             name: UIResponder.keyboardWillShowNotification,
             object: nil
         )
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(keyboardWillHide(_:)),
+            selector: #selector(keyboardWillHide),
             name: UIResponder.keyboardWillHideNotification,
             object: nil
         )
@@ -207,14 +207,13 @@ final class ProductRegistrationViewController: UIViewController {
     
     @objc private func keyboardWillShow(_ sender: Notification) {
         if let keyboardFrame: NSValue = sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            let keyboardHeight = keyboardRectangle.height
+            let keyboardHeight = keyboardFrame.cgRectValue.height
             scrollView?.contentInset.bottom = keyboardHeight
             scrollView?.verticalScrollIndicatorInsets.bottom = keyboardHeight
         }
     }
     
-    @objc private func keyboardWillHide(_ sender: Notification) {
+    @objc private func keyboardWillHide() {
         scrollView?.contentInset.bottom = .zero
         scrollView?.verticalScrollIndicatorInsets.bottom = .zero
     }

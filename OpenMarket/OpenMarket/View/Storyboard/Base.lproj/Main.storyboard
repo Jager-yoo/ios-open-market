@@ -294,7 +294,7 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="808"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="dsg-cs-9tM">
-                                        <rect key="frame" x="10" y="0.0" width="394" height="646.5"/>
+                                        <rect key="frame" x="10" y="0.0" width="394" height="565.5"/>
                                         <subviews>
                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="bLQ-YT-Wja">
                                                 <rect key="frame" x="0.0" y="0.0" width="394" height="136.5"/>
@@ -402,7 +402,7 @@
                                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                             </textField>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="tFm-3Q-kKc">
-                                                <rect key="frame" x="0.0" y="323" width="394" height="323.5"/>
+                                                <rect key="frame" x="0.0" y="323" width="394" height="242.5"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <color key="textColor" systemColor="labelColor"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
@@ -420,8 +420,8 @@
                                 <constraints>
                                     <constraint firstItem="dsg-cs-9tM" firstAttribute="leading" secondItem="bsQ-zh-7bl" secondAttribute="leading" constant="10" id="4lg-Lm-3dD"/>
                                     <constraint firstItem="dsg-cs-9tM" firstAttribute="top" secondItem="bsQ-zh-7bl" secondAttribute="top" id="6Rg-es-oif"/>
-                                    <constraint firstItem="tFm-3Q-kKc" firstAttribute="height" secondItem="cn5-Ir-Oaa" secondAttribute="height" multiplier="0.4" id="GaU-gY-maE"/>
                                     <constraint firstItem="dsg-cs-9tM" firstAttribute="trailing" secondItem="bsQ-zh-7bl" secondAttribute="trailing" constant="-10" id="UqB-1j-2Zo"/>
+                                    <constraint firstItem="tFm-3Q-kKc" firstAttribute="height" relation="greaterThanOrEqual" secondItem="cn5-Ir-Oaa" secondAttribute="height" multiplier="0.3" id="l2b-9k-FKV"/>
                                     <constraint firstItem="dsg-cs-9tM" firstAttribute="bottom" secondItem="bsQ-zh-7bl" secondAttribute="bottom" id="lHE-aF-XF1"/>
                                     <constraint firstItem="dsg-cs-9tM" firstAttribute="width" secondItem="cn5-Ir-Oaa" secondAttribute="width" constant="-20" id="sHt-m9-ERX"/>
                                 </constraints>
