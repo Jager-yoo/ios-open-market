@@ -11,6 +11,6 @@ extension UITableViewController {
     
     func scrollToTop(animated: Bool) {
         let topRow = IndexPath(row: .zero, section: .zero)
-        self.tableView.scrollToRow(at: topRow, at: .top, animated: animated)
+        self.tableView.scrollToRow(at: topRow, at: .bottom, animated: animated)
     }
 }

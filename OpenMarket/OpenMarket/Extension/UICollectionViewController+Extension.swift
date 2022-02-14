@@ -11,6 +11,6 @@ extension UICollectionViewController {
     
     func scrollToFirstItem(animated: Bool) {
         let firstItem = IndexPath(item: .zero, section: .zero)
-        self.collectionView.scrollToItem(at: firstItem, at: .top, animated: animated)
+        self.collectionView.scrollToItem(at: firstItem, at: .bottom, animated: animated)
     }
 }
