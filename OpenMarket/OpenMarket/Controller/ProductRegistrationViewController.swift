@@ -254,14 +254,14 @@ extension ProductRegistrationViewController: UICollectionViewDelegate, UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let maximumImageCount = 5
         let cellType = cells[safe: indexPath.item]
         
-        if cellType == .imagePickerCell {
-            imagePicker.delegate = self
-            present(imagePicker, animated: true, completion: nil)
+        guard cellType == .imagePickerCell else {
+            // 사진 클릭 시, 자세히 보는 기능을 추가할 수 있음
+            return
         }
         
-        let maximumImageCount = 5
         guard productImages.count < maximumImageCount else {
             showAlert(
                 title: "Too Much Images",
@@ -270,6 +270,9 @@ extension ProductRegistrationViewController: UICollectionViewDelegate, UICollect
             )
             return
         }
+        
+        imagePicker.delegate = self
+        present(imagePicker, animated: true, completion: nil)
     }
 }
 
