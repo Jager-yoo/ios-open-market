@@ -93,9 +93,10 @@ APIExecutor().execute(request) { [weak self] (result: Result<ProductsListPage, E
   - UIKit 의 [UITextView](https://developer.apple.com/documentation/uikit/uitextview)에는 기본적인 `placeholder` 기능이 없으므로, 직접 구현해야 했습니다.
 
 - placeholder 역할을 할 별도의 UITextView 를 생성하며, 특정 프로퍼티를 아래와 같이 변경했습니다.
+  - ⭐ `isUserInteractionEnabled` -> 가장 중요한 부분입니다. placeholder 역할을 하는 UITextView 가 `사용자의 터치`를 받으면 안 되므로, [isUserInteractionEnabled](https://developer.apple.com/documentation/uikit/uiview/1622577-isuserinteractionenabled) 프로퍼티를 false 로 바꿔, 터치를 무시하도록 만들었습니다.
   - `textColor` -> 텍스트 색상은 placeholder 특유의 회색을 표현하기 위해, [UIColor.placeholderText](https://developer.apple.com/documentation/uikit/uicolor/3173134-placeholdertext) 색상 적용했습니다.
   - `backgroundColor` -> 배경은 투명한 색상인 [UIColor.clear](https://developer.apple.com/documentation/uikit/uicolor/1621945-clear) 적용하여, 콘텐츠를 가리지 않도록 했습니다.
-  - ⭐ `isUserInteractionEnabled` -> 가장 중요한 처리입니다. placeholder 역할을 하는 UITextView 가 `사용자의 터치`를 받으면 안 되므로, [isUserInteractionEnabled](https://developer.apple.com/documentation/uikit/uiview/1622577-isuserinteractionenabled) 프로퍼티를 false 로 처리하여, 터치를 무시하도록 만들었습니다.
+  - `isScrollEnabled` -> 스크롤 가능 여부를 나타내는 [isScrollEnabled](https://developer.apple.com/documentation/uikit/uiscrollview/1619395-isscrollenabled)를 false 로 만들어서, 오토레이아웃으로 넓이을 잡아줄 수 있도록 했습니다.
   
 ```swift
 // 커스텀 placeholder 역할을 해줄 UITextView 생성
@@ -107,10 +108,8 @@ private var descriptionsTextViewPlaceholder: UITextView = {
     textView.font = .preferredFont(forTextStyle: .body)
     textView.backgroundColor = .clear // 투명한 배경색을 적용
     textView.isUserInteractionEnabled = false // 사용자의 터치를 받지 못하도록 interaction 프로퍼티를 false 처리
-    textView.isScrollEnabled = false
+    textView.isScrollEnabled = false // 스크롤이 불가능하게 만들어서 오토레이아웃으로 넓이 잡아줄 수 있도록 처리
     textView.translatesAutoresizingMaskIntoConstraints = false // 코드로 오토레이아웃을 적용할 것이므로, 해당 프로퍼티는 false 처리
-    textView.showsVerticalScrollIndicator = false
-    textView.showsHorizontalScrollIndicator = false
     return textView
 }()
 
@@ -142,8 +141,139 @@ private func configureDescriptionTextView() {
 # ⚙️ [STEP 2] 상품 목록 UI, 무한 스크롤 구현
 
 <details>
-<summary><h3>1️⃣ 작성 예정</h3></summary>
+<summary><h3>1️⃣ Kingfisher 인터페이스를 참고한 setImage 메서드</h3></summary>
 
-- segmented Control 관련 내용
+- 이미지 다운로드를 위한 `setImage 메서드`는 [Kingfisher 인터페이스](https://github.com/onevcat/Kingfisher#kingfisher-101)를 참고해서 만들었습니다.
+  - `URL` 주소를 파라미터로 넣으면, `메모리 캐시`에 동일한 URL을 가진 이미지가 있는지 체크하고, 없다면 이미지를 다운로드해서 `UIImageView 에 할당`하는 메서드입니다.
+  - `UIImageView` 타입의 extension 으로 메서드를 만들고, 테이블뷰/컬렉션뷰의 `cellForRowAt` 메서드가 호출될 때, cell 타입 스스로가 setImage 메서드를 호출해서 `비동기(async)`로 이미지를 다운받아 UIImageView 를 채우는 로직을 가지고 있습니다.
+
+- 테이블뷰/컬렉션뷰의 스크롤을 빠른 속도로 내리면, `Cell 재사용` 로직 때문에 이미지가 바뀌는 이슈가 있었는데요, 그 해결 과정은 별도의 이슈( #6 )로 정리했습니다.
+  - `취소 가능한 비동기 작업(Cancellable)`에 대해선 2️⃣번에 정리했습니다! 😄
+
+```swift
+extension UIImageView {
+    
+    func setImage(with url: URL, invalidImage: UIImage) -> Cancellable? {
+        let cacheKey = url.absoluteString as NSString // URL 을 cacheKey 로 활용하기 위한 변환 과정
+        
+        // 해당 cacheKey 를 사용하는 이미지가 메모리 캐시에 존재한다면, 그 이미지를 꺼내 할당
+        if let cachedImage = ImageCacheManager.shared.object(forKey: cacheKey) {
+            self.image = cachedImage
+            return nil // 이미지를 새롭게 다운받는 비동기 작업이 불필요하므로, nil 을 반환하며 메서드 종료
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            guard let self = self else { return }
+            
+            // 에러가 발생했고 그 에러가 Cell 의 재사용을 위한 prepareForReuse() 메서드 내의 비동기 작업 '취소(cancelled)'로 인한 것이 아니라면 ...
+            if let error = error, error.localizedDescription != "cancelled" {
+                DispatchQueue.main.async {
+                    self.image = invalidImage // 미리 준비해둔 placeholder 이미지를 대신 할당
+                }
+                print("❌ 에러 : \(error.localizedDescription) 발생!")
+                return
+            } else {
+                DispatchQueue.main.async {
+                    guard let imageData = data,
+                          let image = UIImage(data: imageData) else { return }
+                    self.image = image
+                    ImageCacheManager.shared.setObject(image, forKey: cacheKey) // 메모리 캐시에 URL 을 cacheKey 로 하는 이미지 저장
+                }
+            }
+        }
+        task.resume()
+        return task // 이미지를 새롭게 다운받는 비동기 작업을 반환하며 메서드 종료
+    }
+}
+```
+
+</details>
+
+<details>
+<summary><h3>2️⃣ 취소 가능한 비동기 작업과 Cell 타입의 prepareForReuse() 활용</h3></summary>
+
+- 위 1️⃣번에서 다뤘던 `setImage` 메서드는, 특이하게 `Cancellable?`을 반환합니다.
+  - Cancellable 프로토콜을 준수하는 타입이 반환되고, 옵셔널을 붙여서 `nil`이 반환될 수도 있죠.
+  - 반환시키는 task 는 원래 [URLSessionDataTask](https://developer.apple.com/documentation/foundation/urlsessiondatatask) 클래스 타입이지만, `추상화`를 위해 Cancellable 프로토콜을 채택하게 만들고, 그 프로토콜이 반환되는 것으로 표현했습니다.
+  - Cancellable 프로토콜을 준수하려면, 오직 하나의 메서드 `cancel()` 만을 구현하면 됩니다.
+  - 이때, `URLSessionDataTask` 클래스는 인스턴스 메서드로 이미 동일한 이름의 [cancel()](https://developer.apple.com/documentation/foundation/urlsessiontask/1411591-cancel) 메서드를 사용할 수 있습니다.
+
+- UITableViewCell 타입에 프로퍼티로 `private var cancellableImageTask: Cancellable?` 를 생성해둡니다.
+  - 그리고 `setImage` 메서드를 호출할 때 마다, 그 반환값을 cancellableImageTask 프로퍼티에 할당합니다.
+  - 만약 다운로드 받아야 하는 이미지가 이미 `메모리 캐시`에 존재하면 cancellableImageTask 프로퍼티는 `nil`을 유지할 것이고, 비동기 작업이 완료되는 경우에도 `nil`이 될 것입니다.
+
+- ☑️ 만약 테이블뷰의 스크롤을 빠르게 내리게 되면, Cell 타입이 `재사용`되면서, [prepareForReuse()](https://developer.apple.com/documentation/uikit/uitableviewcell/1623223-prepareforreuse) 메서드가 호출됩니다.
+  - 이때, Cell 재사용을 위해 이미지를 비워주고(nil), 완료되지 않은 비동기 작업을 `취소(cancel)`시킵니다.
+  - 이 방법을 통해, 스크롤을 빠르게 내리더라도, 이미지를 안정적으로 세팅할 수 있습니다.
+  
+```swift
+protocol Cancellable {
+    // Cancellable 프로토콜을 채택한 타입은 cancel() 메서드를 구현해야 함
+    func cancel()
+}
+
+// URLSessionDataTask 클래스가 Cancellable 프로토콜 채택
+extension URLSessionDataTask: Cancellable { }
+
+final class ProductTableViewCell: UITableViewCell {
+    // @IBOutlet 프로퍼티들 ...
+    
+    // ⭐️Cancellable 프로토콜을 준수하는 프로퍼티 cancellableImageTask 를 옵셔널로 선언!
+    private var cancellableImageTask: Cancellable?
+    
+    // 이미지 다운로드에 실패하면 보여줄 UIImage 생성
+    private let invalidImage: UIImage = {
+        let invalidImage = UIImage(systemName: "xmark.icloud") ?? UIImage()
+        return invalidImage.withTintColor(.systemGray, renderingMode: .alwaysOriginal)
+    }()
+    
+    override func prepareForReuse() {
+        productThumbnail?.image = nil // 일단 이미지를 비워주고
+        cancellableImageTask?.cancel() // ⭐️만약 완료되지 않은 비동기 작업이 있다면, 취소(cancel)함
+    }
+    
+    func configureTableContent(with product: Product) {
+        if let url = URL(string: product.thumbnail) {
+            // cancellableImageTask 프로퍼티에 비동기 작업을 할당
+            cancellableImageTask = productThumbnail?.setImage(
+                with: url,
+                invalidImage: invalidImage
+            )
+        }
+        productName?.attributedText = product.attributedName
+        productPrice?.attributedText = product.attributedPrice
+        productBargainPrice?.attributedText = product.attributedBargainPrice
+        productStock?.attributedText = product.attributedStock
+    }
+}
+```
+
+</details>
+  
+<details>
+<summary><h3>3️⃣ 무한 스크롤을 위한 willDisplay 메서드 활용과 paginationBuffer 적용</h3></summary>
+  
+- UITableViewController 클래스의 [willDisplay](https://developer.apple.com/documentation/uikit/uitableviewdelegate/1614883-tableview) 메서드를 활용해서, 다음 Cell 들을 어느 타이밍에 테이블뷰에 추가할 것인지 결정했습니다.
+  - 스크롤이 테이블뷰의 바닥에 닿기 전에, 미리 다음 페이지 정보를 다운로드하면, `버벅거림 없는 무한 스크롤`이 가능합니다.
+  - 이때, `paginationBuffer`라는 이름의 프로퍼티를 선언해서, 개념을 구체화했습니다.
+  - paginationBuffer 개념을 처음 만들 때, 페이지네이션이 중복으로 작동하는 이슈가 있었는데요, 그 해결 과정은 별도의 이슈( #4 )로 정리했습니다. 😄
+  
+```swift
+final class ProductTableViewController: UITableViewController {
+    
+    private var currentPageNo: Int = 1
+    private var hasNextPage: Bool = false
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let paginationBuffer = 3 // 테이블뷰의 마지막 Cell '2개' 위에서 다음 페이지 다운로드 시작
+        // 만약 products.count 가 '10'이라면, 마지막 indexPath.row 는 '9'가 된다.
+        // indexPath.row 가 '7'이 되는 시점은 마지막 Cell '2개' 위에 있는 Cell 이 화면에 보일 때가 된다.
+        guard indexPath.row == products.count - paginationBuffer,
+              hasNextPage == true else { return } // 다운로드받을 '다음 페이지'가 존재하는지도 확인 필요
+        
+        downloadProductsListPage(number: currentPageNo + 1)
+    }
+}
+```
 
 </details>
