@@ -43,8 +43,6 @@ final class ProductRegistrationViewController: UIViewController {
         textView.isUserInteractionEnabled = false
         textView.isScrollEnabled = false
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.showsVerticalScrollIndicator = false
-        textView.showsHorizontalScrollIndicator = false
         return textView
     }()
     
