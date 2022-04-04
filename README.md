@@ -278,6 +278,16 @@ final class ProductTableViewController: UITableViewController {
 
 </details>
 
+<details>
+<summary><h3>4️⃣ TableViewCell 내부의 오토레이아웃 충돌 이슈 해결</h3></summary>
+
+- 콘솔로그에 반복적으로 프린트되던 `오토레이아웃 관련 이슈`를 [WTFautolayout 사이트](https://www.wtfautolayout.com/)를 이용해서 해결했습니다.
+  - `문제의 원인` -> 하나의 UI 컴포넌트에 중복으로 Constraint 를 적용해서, `우선순위 이슈`가 발생했습니다.
+  - `해결 방법` -> 두 개의 Constraint 중 하나의 `우선순위(Priority)`를 750 으로 낮춰서 문제를 해결할 수 있었습니다.
+  - 구체적인 내용은 별도의 이슈( #1 )로 정리했습니다. 😄
+
+</details>
+
 <br>
 
 # ⚙️ [STEP 1] 모델/네트워킹 타입 구현
